@@ -52,6 +52,8 @@
 
 - criar ambiente: `python3 -m venv .meuAmbienteVirtualRisosRisos`
 - ativar ambiente: `.\.venv\Scripts\activate`
-- definir e exportar variavel
+- `pip install groq`
+- definir e exportar variavel (use o CMD)
   - set GROQ_API_KEY='suachave'
   - echo %GROQ_API_KEY%
+- só usar
