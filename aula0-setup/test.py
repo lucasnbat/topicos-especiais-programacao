@@ -10,7 +10,7 @@ chat_completion = client.chat.completions.create(
     messages=[
         {
             "role": "user",
-            "content": "Explain the importance of fast language models",
+            "content": "Me diga como ser feliz...preciso de uma resposta em português",
         }
     ],
     model="llama3-8b-8192",
