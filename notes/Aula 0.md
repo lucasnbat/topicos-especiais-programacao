@@ -47,3 +47,11 @@
 
 - gpt4-mini: https://platform.openai.com/playground/chat?models=gpt-4o-mini
 - groq: https://groq.com/
+
+## Setup
+
+- criar ambiente: `python3 -m venv .meuAmbienteVirtualRisosRisos`
+- ativar ambiente: `.\.venv\Scripts\activate`
+- definir e exportar variavel
+  - set GROQ_API_KEY='suachave'
+  - echo %GROQ_API_KEY%
