@@ -42,3 +42,8 @@
 - Mais informações:
   - Reinforcement Learning from Human Feedback (RLHF):
     - Aprendizado por reforço para gerar respostas mais humanas;
+
+## Trabalhando com a APIs
+
+- gpt4-mini: https://platform.openai.com/playground/chat?models=gpt-4o-mini
+- groq: https://groq.com/
