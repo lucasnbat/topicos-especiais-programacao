@@ -56,4 +56,3 @@
 - definir e exportar variavel (use o CMD)
   - set GROQ_API_KEY=suachave (NAO USE ASPAS AO REDOR DO VALOR)
   - echo %GROQ_API_KEY%
-- só usar
