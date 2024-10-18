@@ -1,0 +1,22 @@
+version: '3.9'
+services:
+  whatsapp_go:
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "200k"
+        max-file: "10"
+    image: "aldinokemal2104/go-whatsapp-web-multidevice:latest"
+    build:
+      context: .
+      dockerfile: ./docker/golang.Dockerfile
+    restart: 'always'
+    ports:
+      - "3100:3000"
+    environment:
+      - WEBHOOK="https://webhook.site/1d61cb0b-61bf-42dd-9820-004a8cd7d88b"
+    volumes:
+      - whatsapp_data:/app/storages
+
+volumes:
+  whatsapp_data:
