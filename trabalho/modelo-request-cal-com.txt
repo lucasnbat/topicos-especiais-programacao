@@ -1,0 +1,23 @@
+curl --request POST \
+  --url https://api.cal.com/v1/bookings?apiKey=cal_live_8d72e5273d9a83d631ad8c047cbd3e4d \
+  --header 'Content-Type: application/json' \
+  --data '{
+  "eventTypeId": 1307709,
+  "start": "2024-10-24T13:00:00.000Z",
+  "end": "2024-10-24T14:00:00.000Z",
+  "responses": {
+    "name": "Hello Hello",
+    "email": "hello@gmail.com",
+    "smsReminderNumber": "",
+    "location": {
+      "value": "userPhone",
+      "optionValue": ""
+    }
+  },
+  "timeZone": "Europe/London",
+  "language": "en",
+  "title": "Debugging between Syed Ali Shahbaz and Hello Hello",
+  "description": null,
+  "status": "PENDING",
+  "metadata": {}
+}'

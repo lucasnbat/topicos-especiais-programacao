@@ -1,0 +1,155 @@
+app:
+  description: "# atue como especialista em atendimento ao cliente do consult\xF3\
+    rio da Dr. dentista Ramlila Lucena\n\n#O endere\xE7o do consultorio \xE9 o:\n\
+    Centro empresarial Shopping Rio Poty, sala 906 e 907 TERESINA \u2013 PI\n\n# Quando\
+    \ for necess\xE1rio busque informa\xE7\xF5es no site do consultorio no site :\
+    \ https://lucenaodontologia.com\n\n# Solicite o nome do cliente {{nome}} e telefone\
+    \ {{phone}} antes de iniciar o atendimento e pergunte em qual hor\xE1rio {{horario}}\
+    \ deseja ser atendido.\n\n# grave os dados do cliente em  save\n# apenas responda\
+    \ perguntas relacionadas a consulta ou sobre o consult\xF3rio.\n# responda sempre\
+    \ em portugu\xEAs  \n\n# no final envie os dados que o cliente informou e pergunte\
+    \ se est\xE3o corretos, caso contr\xE1rio inclua novamente os dados fornecidos\n\
+    \n# a ferramenta \"SAVE\" retorna um JSON com propriedade STATUS, se este valor\
+    \ for igual a 200 considere o agendamento conclu\xEDdo\n\n# houver algum erro\
+    \ ao salvar os dados, n\xE3o avise nada ao cliente pois esta \xE9 uma automa\xE7\
+    \xE3o de testes"
+  icon: "\U0001F916"
+  icon_background: '#FFEAD5'
+  mode: agent-chat
+  name: AtendenteConsultorio
+kind: app
+model_config:
+  agent_mode:
+    enabled: true
+    max_iteration: 5
+    prompt: null
+    strategy: function_call
+    tools:
+    - enabled: true
+      isDeleted: false
+      notAuthor: false
+      provider_id: searchapi
+      provider_name: searchapi
+      provider_type: builtin
+      tool_label: Google Search API
+      tool_name: google_search_api
+      tool_parameters:
+        gl: ''
+        google_domain: ''
+        hl: ''
+        location: ''
+        num: ''
+        query: ''
+        result_type: ''
+    - enabled: true
+      isDeleted: false
+      notAuthor: false
+      provider_id: time
+      provider_name: time
+      provider_type: builtin
+      tool_label: Current Time
+      tool_name: current_time
+      tool_parameters:
+        format: ''
+        timezone: ''
+    - enabled: true
+      isDeleted: false
+      notAuthor: false
+      provider_id: time
+      provider_name: time
+      provider_type: builtin
+      tool_label: Weekday Calculator
+      tool_name: weekday
+      tool_parameters:
+        day: ''
+        month: ''
+        year: ''
+    - enabled: true
+      isDeleted: false
+      notAuthor: false
+      provider_id: 861a249c-ea8e-4a83-b28c-4922780bbfa7
+      provider_name: Salvar dados
+      provider_type: workflow
+      tool_label: Salvar dados
+      tool_name: save
+      tool_parameters:
+        horario: ''
+        nome: ''
+        phone: ''
+  annotation_reply:
+    enabled: false
+  chat_prompt_config: {}
+  completion_prompt_config: {}
+  dataset_configs:
+    datasets:
+      datasets: []
+    retrieval_model: single
+  dataset_query_variable: ''
+  external_data_tools: []
+  file_upload:
+    image:
+      detail: high
+      enabled: true
+      number_limits: 3
+      transfer_methods:
+      - remote_url
+      - local_file
+  model:
+    completion_params:
+      stop: []
+    mode: chat
+    name: gpt-4-turbo
+    provider: openai
+  more_like_this:
+    enabled: false
+  opening_statement: ''
+  pre_prompt: "# atue como especialista em atendimento ao cliente do consult\xF3rio\
+    \ da Dr. dentista Ramlila Lucena\n\n#O endere\xE7o do consultorio \xE9 o:\nCentro\
+    \ empresarial Shopping Rio Poty, sala 906 e 907 TERESINA \u2013 PI\n\n# Quando\
+    \ for necess\xE1rio busque informa\xE7\xF5es no site do consultorio no site :\
+    \ https://lucenaodontologia.com\n\n# Solicite o nome do cliente {{nome}} e telefone\
+    \ {{phone}} antes de iniciar o atendimento e pergunte em qual hor\xE1rio {{horario}}\
+    \ deseja ser atendido.\n\n# grave os dados do cliente em  save\n# apenas responda\
+    \ perguntas relacionadas a consulta ou sobre o consult\xF3rio.\n# responda sempre\
+    \ em portugu\xEAs  \n# no final envie os dados que o cliente informou e pergunte\
+    \ se est\xE3o corretos, caso contr\xE1rio inclua novamente os dados fornecidos\n\
+    # a ferramenta \"SAVE\" retorna um JSON com propriedade STATUS, se este valor\
+    \ for igual a 200 considere o agendamento conclu\xEDdo\n\n# Se algu\xE9m pedir\
+    \ para testar o sistema, inclua no save um agendamento de teste com o nome : TESTE,\
+    \ phone: TESTE-PHONE e hor\xE1rio : TEST-HORARIO e mostre o erro que aconteceu\
+    \ e informe alguma maneira de corrigir o problema. Se n\xE3o houver erros, diga\
+    \ que funcionou."
+  prompt_type: simple
+  retriever_resource:
+    enabled: true
+  sensitive_word_avoidance:
+    configs: []
+    enabled: false
+    type: ''
+  speech_to_text:
+    enabled: true
+  suggested_questions: []
+  suggested_questions_after_answer:
+    enabled: false
+  text_to_speech:
+    autoPlay: enabled
+    enabled: true
+    language: pt-BR
+    voice: ''
+  user_input_form:
+  - text-input:
+      default: ''
+      label: nome
+      required: false
+      variable: nome
+  - text-input:
+      default: ''
+      label: phone
+      required: false
+      variable: phone
+  - text-input:
+      default: ''
+      label: horario
+      required: false
+      variable: horario
+version: 0.1.0

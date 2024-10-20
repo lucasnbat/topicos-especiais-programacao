@@ -1,0 +1,192 @@
+app:
+  description: ''
+  icon: "\U0001F916"
+  icon_background: '#FFEAD5'
+  mode: workflow
+  name: FluxoBaserow
+kind: app
+version: 0.1.0
+workflow:
+  environment_variables: []
+  features:
+    file_upload:
+      image:
+        enabled: false
+        number_limits: 3
+        transfer_methods:
+        - remote_url
+    opening_statement: ''
+    retriever_resource:
+      enabled: true
+    sensitive_word_avoidance:
+      enabled: false
+    speech_to_text:
+      enabled: false
+    suggested_questions: []
+    suggested_questions_after_answer:
+      enabled: false
+    text_to_speech:
+      enabled: false
+      language: ''
+      voice: ''
+  graph:
+    edges:
+    - data:
+        isInIteration: false
+        sourceType: start
+        targetType: http-request
+      id: 1721361916210-source-1721366146642-target
+      source: '1721361916210'
+      sourceHandle: source
+      target: '1721366146642'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        sourceType: http-request
+        targetType: end
+      id: 1721366146642-source-1721366326338-target
+      source: '1721366146642'
+      sourceHandle: source
+      target: '1721366326338'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    nodes:
+    - data:
+        desc: ''
+        selected: false
+        title: Iniciar
+        type: start
+        variables:
+        - label: nome
+          max_length: 48
+          options: []
+          required: false
+          type: text-input
+          variable: nome
+        - label: phone
+          max_length: 48
+          options: []
+          required: false
+          type: text-input
+          variable: phone
+        - label: horario
+          max_length: 48
+          options: []
+          required: false
+          type: text-input
+          variable: horario
+        - label: items
+          max_length: 48
+          options: []
+          required: false
+          type: text-input
+          variable: items
+      height: 168
+      id: '1721361916210'
+      position:
+        x: 12.448073851951449
+        y: -23.86011005921975
+      positionAbsolute:
+        x: 12.448073851951449
+        y: -23.86011005921975
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+    - data:
+        authorization:
+          config:
+            api_key: Token  R9vMcfXNvypYflO8UaQz3QnR4Vb3XVmh
+            header: Authorization
+            type: custom
+          type: api-key
+        body:
+          data: 'nome:{{#1721361916210.nome#}}
+
+            phone:{{#1721361916210.phone#}}
+
+            horario:{{#1721361916210.horario#}}
+
+            userID:{{#sys.user_id#}}'
+          type: form-data
+        desc: ''
+        headers: Content-Type:application/json
+        method: post
+        params: ''
+        selected: false
+        timeout:
+          max_connect_timeout: 0
+          max_read_timeout: 0
+          max_write_timeout: 0
+        title: "Requisi\xE7\xE3o HTTP"
+        type: http-request
+        url: https://api.baserow.io/api/database/rows/table/326261/?user_field_names=true
+        variables: []
+      height: 122
+      id: '1721366146642'
+      position:
+        x: 484.260854117549
+        y: 166.62152889448276
+      positionAbsolute:
+        x: 484.260854117549
+        y: 166.62152889448276
+      selected: true
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+    - data:
+        desc: ''
+        outputs:
+        - value_selector:
+          - '1721361916210'
+          - nome
+          variable: nome
+        - value_selector:
+          - '1721361916210'
+          - phone
+          variable: phone
+        - value_selector:
+          - '1721361916210'
+          - horario
+          variable: horario
+        - value_selector:
+          - '1721366146642'
+          - status_code
+          variable: status
+        - value_selector:
+          - '1721366146642'
+          - body
+          variable: output
+        - value_selector:
+          - '1721366146642'
+          - status_code
+          variable: status_code
+        - value_selector:
+          - '1721361916210'
+          - items
+          variable: items
+        selected: false
+        title: Fim
+        type: end
+      height: 246
+      id: '1721366326338'
+      position:
+        x: 961.7298064979811
+        y: -36.995206810229206
+      positionAbsolute:
+        x: 961.7298064979811
+        y: -36.995206810229206
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+    viewport:
+      x: 103.72307748239325
+      y: 194.14352462874206
+      zoom: 1.0266895457199954
