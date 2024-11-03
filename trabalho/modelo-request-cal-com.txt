@@ -21,3 +21,12 @@ curl --request POST \
   "status": "PENDING",
   "metadata": {}
 }'
+
+funções:
+
+get_start_of_current_week
+get_end_of_current_week
+get_start_of_next_week
+get_end_of_next_week
+
+{"startTime": "2024-11-09T10:00:00.000Z", "nome": "Gabriel", "telefone": "66996613990", "email": "lucasnunesb6@gmail.com", "endTime": "2024-11-09T11:00:00.000Z"}}
