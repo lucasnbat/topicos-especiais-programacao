@@ -10,7 +10,7 @@ services:
     volumes:
       - n8n_data:/home/node/.n8n
     networks:
-      - n8n-net
+      - shared-network  # Adiciona a rede compartilhada
 
 volumes:
   n8n_data:
@@ -18,4 +18,6 @@ volumes:
 networks:
   n8n-net:
     name: n8n-net
+    driver: bridge
+  shared-network:    # Define a rede compartilhada
     driver: bridge

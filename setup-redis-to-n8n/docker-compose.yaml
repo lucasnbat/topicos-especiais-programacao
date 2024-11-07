@@ -1,0 +1,23 @@
+version: '3.8'
+
+services:
+  redis:
+    image: redis:latest
+    container_name: redis-container
+    ports:
+      - "6379:6379"
+    environment:
+      - REDIS_PASSWORD=rootredis
+    volumes:
+      - redis_data:/data
+    command: redis-server --appendonly yes --requirepass "rootredis"
+    networks:
+      - shared-network  # Adiciona a rede compartilhada
+
+volumes:
+  redis_data:
+
+networks:
+  shared-network:    # Define a rede compartilhada
+    driver: bridge
+

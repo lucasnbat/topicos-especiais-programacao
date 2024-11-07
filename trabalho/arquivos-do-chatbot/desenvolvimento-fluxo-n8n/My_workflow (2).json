@@ -1,0 +1,447 @@
+{
+  "name": "My workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "whats",
+        "options": {}
+      },
+      "id": "4fa48f0f-aa2b-482e-af2e-9ca781ee97ba",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -760,
+        220
+      ],
+      "webhookId": "b438bc05-ece6-4f1e-bcd9-4e415518faef"
+    },
+    {
+      "parameters": {},
+      "id": "f6c8b3f7-eb7e-4101-942b-9de13e86593d",
+      "name": "No Operation, do nothing",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        160,
+        40
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "d7052873-8610-4d2b-a44c-8bb813be2031",
+              "name": "telefoneCliente",
+              "value": "={{ $json.body.data.key.remoteJid }}",
+              "type": "string"
+            },
+            {
+              "id": "4330e4d7-eb3b-4aca-a29d-492bbd4c74ff",
+              "name": "telefoneEmpresa",
+              "value": "={{ $json.body.sender }}",
+              "type": "string"
+            },
+            {
+              "id": "05575cee-5620-45ce-a3c4-d35f8f2da609",
+              "name": "nomeCliente",
+              "value": "={{ $json.body.data.pushName }}",
+              "type": "string"
+            },
+            {
+              "id": "88f4a4af-8ef6-4810-9a5c-ef467df3c1d2",
+              "name": "nomeInstancia",
+              "value": "={{ $json.body.instance }}",
+              "type": "string"
+            },
+            {
+              "id": "8348f3f0-730c-41ea-a77e-8935713151ef",
+              "name": "mensagem",
+              "value": "={{ $json.body.data.message.conversation }}",
+              "type": "string"
+            },
+            {
+              "id": "6253fb28-98fa-46a7-af81-b9c16bc351c3",
+              "name": "tipoMensagem",
+              "value": "={{ $json.body.data.messageType }}",
+              "type": "string"
+            },
+            {
+              "id": "a000d91d-c8dc-4f54-8ee5-737c24348d4d",
+              "name": "idMensagem",
+              "value": "={{ $json.body.data.key.id }}",
+              "type": "string"
+            },
+            {
+              "id": "c6b81fce-0087-4428-a388-a2d2963959e0",
+              "name": "objetoMensagem",
+              "value": "={{ $json.body }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "64a9bc6f-bfbc-4dfb-9d23-910ac312ae8b",
+      "name": "Filtra campos",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -540,
+        220
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "268565f2-7db2-4483-b43c-fac3a04f092a",
+              "leftValue": "={{ $('Webhook').item.json.body.data.key.fromMe }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "d3888a3a-bfa2-46b4-9e68-5c7a2b4ee597",
+      "name": "Eu mandei mensagem para eu mesmo?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -320,
+        220
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "tableId": "empresa",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "telefone",
+              "keyValue": "={{ $json.telefoneEmpresa }}"
+            }
+          ]
+        }
+      },
+      "id": "51e70565-ea3a-45fc-b42a-ef64494b7415",
+      "name": "Busca empresa",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        100,
+        260
+      ],
+      "credentials": {
+        "supabaseApi": {
+          "id": "wWgoEI5cZBSMLJmt",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "tableId": "clientes",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "telefone",
+              "keyValue": "={{ $('Filtra campos').item.json.telefoneCliente }}"
+            }
+          ]
+        }
+      },
+      "id": "a13f5b42-c7d2-4ee2-a5cb-425a0a9ed2bd",
+      "name": "Busca cliente",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        320,
+        260
+      ],
+      "alwaysOutputData": true,
+      "credentials": {
+        "supabaseApi": {
+          "id": "wWgoEI5cZBSMLJmt",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "aab8920a-ae1d-4653-8ba1-0c9c473f66f5",
+              "leftValue": "={{ $json.telefone }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "400e4644-f404-400d-a0c1-82621ae803bd",
+      "name": "If",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        540,
+        260
+      ]
+    },
+    {
+      "parameters": {
+        "tableId": "clientes",
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldId": "nome",
+              "fieldValue": "={{ $('Filtra campos').item.json.nomeCliente }}"
+            },
+            {
+              "fieldId": "email",
+              "fieldValue": "teste@teste.com"
+            },
+            {
+              "fieldId": "telefone",
+              "fieldValue": "={{ $('Filtra campos').item.json.telefoneCliente }}"
+            },
+            {
+              "fieldId": "empresa",
+              "fieldValue": "={{ $('Busca empresa').item.json.id }}"
+            }
+          ]
+        }
+      },
+      "id": "80fe7984-1f7a-42fc-bf03-75420ec450b4",
+      "name": "Supabase",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        1020,
+        660
+      ],
+      "credentials": {
+        "supabaseApi": {
+          "id": "wWgoEI5cZBSMLJmt",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "push"
+      },
+      "id": "d453291d-80be-4f3f-98df-b8a3d7ea056e",
+      "name": "Redis",
+      "type": "n8n-nodes-base.redis",
+      "typeVersion": 1,
+      "position": [
+        1040,
+        140
+      ],
+      "credentials": {
+        "redis": {
+          "id": "ZAg6wk7G85kK1xom",
+          "name": "Redis account"
+        }
+      }
+    }
+  ],
+  "pinData": {
+    "Webhook": [
+      {
+        "json": {
+          "headers": {
+            "host": "a2a0-45-229-70-76.ngrok-free.app",
+            "user-agent": "axios/1.7.7",
+            "content-length": "947",
+            "accept-encoding": "gzip, compress, deflate, br",
+            "content-type": "application/json",
+            "x-forwarded-for": "45.229.70.76",
+            "x-forwarded-host": "a2a0-45-229-70-76.ngrok-free.app",
+            "x-forwarded-proto": "https"
+          },
+          "params": {},
+          "query": {},
+          "body": {
+            "event": "messages.upsert",
+            "instance": "lucas",
+            "data": {
+              "key": {
+                "remoteJid": "556692235295@s.whatsapp.net",
+                "fromMe": false,
+                "id": "3F10736C7436AE5982EC"
+              },
+              "pushName": "Winy Zanin",
+              "status": "DELIVERY_ACK",
+              "message": {
+                "messageContextInfo": {
+                  "deviceListMetadata": {
+                    "senderKeyHash": "Y3mWgcPDsozS3A==",
+                    "senderTimestamp": "1729387149",
+                    "recipientKeyHash": "YH6i5k4LxCA88w==",
+                    "recipientTimestamp": "1730680832"
+                  },
+                  "deviceListMetadataVersion": 2
+                },
+                "conversation": "abobora cabotiã"
+              },
+              "contextInfo": {
+                "expiration": 0,
+                "ephemeralSettingTimestamp": "1712143789",
+                "disappearingMode": {
+                  "initiator": "CHANGED_IN_CHAT"
+                }
+              },
+              "messageType": "conversation",
+              "messageTimestamp": 1730683389,
+              "instanceId": "e799f06d-a5e5-4ba8-bee0-e90864d0c5bb",
+              "source": "unknown"
+            },
+            "destination": "https://a2a0-45-229-70-76.ngrok-free.app/webhook-test/whats",
+            "date_time": "2024-11-03T22:23:09.602Z",
+            "sender": "556696613990@s.whatsapp.net",
+            "server_url": "http://localhost:8090",
+            "apikey": "171561B40E91-4545-B98B-EA16F5B9CDF2"
+          },
+          "webhookUrl": "http://localhost:5678/webhook-test/whats",
+          "executionMode": "test"
+        }
+      }
+    ]
+  },
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Filtra campos",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filtra campos": {
+      "main": [
+        [
+          {
+            "node": "Eu mandei mensagem para eu mesmo?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Eu mandei mensagem para eu mesmo?": {
+      "main": [
+        [
+          {
+            "node": "No Operation, do nothing",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Busca empresa",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Busca empresa": {
+      "main": [
+        [
+          {
+            "node": "Busca cliente",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Busca cliente": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Redis",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Supabase",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Supabase": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "1d0ca25b-1c05-4801-9301-187cc0be0dc2",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "820741496786d8ba7d5abf196562ef82fcc14b243df91d47772a4b8c04182b38"
+  },
+  "id": "OzLoWOdTpmAwhRg6",
+  "tags": []
+}
