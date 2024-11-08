@@ -1,0 +1,237 @@
+{
+  "name": "Aula-07-11-2024",
+  "nodes": [
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "ae00eb38-a3cb-47c1-a08a-a79346e431c1",
+              "name": "telefoneCliente",
+              "value": "={{ $json.body.data.key.remoteJid }}",
+              "type": "string"
+            },
+            {
+              "id": "0eec5ff6-8d04-4b5f-856e-e79d9cad1401",
+              "name": "telefoneEmpresa",
+              "value": "={{ $json.body.sender }}",
+              "type": "string"
+            },
+            {
+              "id": "3703322d-9013-4716-9819-5bebd34dac5a",
+              "name": "mensagem",
+              "value": "={{ $json.body.data.message.conversation }}",
+              "type": "string"
+            },
+            {
+              "id": "b48ccbc3-e71f-4c0d-82e0-789378dc2497",
+              "name": "nomeCliente",
+              "value": "={{ $json.body.data.pushName }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "bf471531-ce1f-4d43-9b8a-d3ec96667381",
+      "name": "Edit Fields",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        320,
+        280
+      ]
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "whats",
+        "options": {}
+      },
+      "id": "24e8b45f-99d3-4ddf-b4a6-af051ffc6844",
+      "name": "Webhook Test",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        100,
+        280
+      ],
+      "webhookId": "333cb1b3-0dd9-4898-b79c-b176d2070743"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "216efc38-f6a8-4a59-8301-cedf83f1baba",
+              "leftValue": "={{ $('Webhook Test').item.json.body.event }}",
+              "rightValue": "messages.upsert",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "8b7c6cb6-bb77-4e94-9e08-d7ed7bb8a779",
+      "name": "If",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        540,
+        280
+      ],
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://5efd-201-3-14-196.ngrok-free.app/message/sendText/{{ $('Webhook Test').item.json.body.instance }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apiKey",
+              "value": "B96BDA563D4C94BE990DA8D63081C5ETOMIFA"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "number",
+              "value": "={{ $json.telefoneCliente }}"
+            },
+            {
+              "name": "text",
+              "value": "RISOS RISOS"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "df3b968a-c7fd-4b33-b341-a0c382384c8f",
+      "name": "HTTP Request",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1040,
+        140
+      ]
+    }
+  ],
+  "pinData": {
+    "Webhook Test": [
+      {
+        "json": {
+          "headers": {
+            "host": "1b1d-201-3-14-196.ngrok-free.app",
+            "user-agent": "axios/1.7.7",
+            "content-length": "893",
+            "accept-encoding": "gzip, compress, deflate, br",
+            "content-type": "application/json",
+            "x-forwarded-for": "201.3.14.196",
+            "x-forwarded-host": "1b1d-201-3-14-196.ngrok-free.app",
+            "x-forwarded-proto": "https"
+          },
+          "params": {},
+          "query": {},
+          "body": {
+            "event": "messages.upsert",
+            "instance": "Lucas",
+            "data": {
+              "key": {
+                "remoteJid": "556696670435@s.whatsapp.net",
+                "fromMe": false,
+                "id": "0A33F93D24C7017E6830F8F8BC549CAE"
+              },
+              "pushName": "Bruno Zaiatz",
+              "status": "DELIVERY_ACK",
+              "message": {
+                "conversation": "Mensagem",
+                "messageContextInfo": {
+                  "deviceListMetadata": {
+                    "senderKeyHash": "BkGaMkR6Mqp9hw==",
+                    "senderTimestamp": "1731024224",
+                    "recipientKeyHash": "SFgsp7Yndjg3wQ==",
+                    "recipientTimestamp": "1731022452"
+                  },
+                  "deviceListMetadataVersion": 2,
+                  "messageSecret": "EtuTrcQvLAoHyfxpAcqASKDcmmS/KKi9EiYCkAReNug="
+                }
+              },
+              "messageType": "conversation",
+              "messageTimestamp": 1731025925,
+              "instanceId": "abe62f7b-4b98-441e-a3c4-9c83082a3331",
+              "source": "android"
+            },
+            "destination": "https://1b1d-201-3-14-196.ngrok-free.app/webhook-test/whats",
+            "date_time": "2024-11-07T21:32:06.501Z",
+            "sender": "556696613990@s.whatsapp.net",
+            "server_url": "http://localhost:8090",
+            "apikey": "B18B57C6E2A8-4B76-96A6-8ABF3CF9D11D"
+          },
+          "webhookUrl": "http://localhost:5678/webhook-test/whats",
+          "executionMode": "test"
+        }
+      }
+    ]
+  },
+  "connections": {
+    "Webhook Test": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "e4847ed0-22fa-4fcb-ba3b-8906f528bdba",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "820741496786d8ba7d5abf196562ef82fcc14b243df91d47772a4b8c04182b38"
+  },
+  "id": "IpXaql3BJxS3xHg1",
+  "tags": []
+}
