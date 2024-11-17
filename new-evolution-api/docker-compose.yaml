@@ -8,6 +8,7 @@ services:
       - evolution_instances:/evolution/instances
     networks:
       - evolution-net
+      - shared-network
     env_file:
       - .env
     expose:
@@ -46,3 +47,5 @@ networks:
   evolution-net:
     name: evolution-net
     driver: bridge
+  shared-network:  # Adiciona a rede compartilhada
+    external: true
