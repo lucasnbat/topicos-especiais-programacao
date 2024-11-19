@@ -1,0 +1,668 @@
+{
+  "name": "gigabot",
+  "nodes": [
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "d7052873-8610-4d2b-a44c-8bb813be2031",
+              "name": "telefoneCliente",
+              "value": "={{ $json.body.data.key.remoteJid }}",
+              "type": "string"
+            },
+            {
+              "id": "4330e4d7-eb3b-4aca-a29d-492bbd4c74ff",
+              "name": "telefoneEmpresa",
+              "value": "={{ $json.body.sender }}",
+              "type": "string"
+            },
+            {
+              "id": "05575cee-5620-45ce-a3c4-d35f8f2da609",
+              "name": "nomeCliente",
+              "value": "={{ $json.body.data.pushName }}",
+              "type": "string"
+            },
+            {
+              "id": "88f4a4af-8ef6-4810-9a5c-ef467df3c1d2",
+              "name": "nomeInstancia",
+              "value": "={{ $json.body.instance }}",
+              "type": "string"
+            },
+            {
+              "id": "8348f3f0-730c-41ea-a77e-8935713151ef",
+              "name": "mensagem",
+              "value": "={{ $json.body.data.message.conversation }}",
+              "type": "string"
+            },
+            {
+              "id": "6253fb28-98fa-46a7-af81-b9c16bc351c3",
+              "name": "tipoMensagem",
+              "value": "={{ $json.body.data.messageType }}",
+              "type": "string"
+            },
+            {
+              "id": "a000d91d-c8dc-4f54-8ee5-737c24348d4d",
+              "name": "idMensagem",
+              "value": "={{ $json.body.data.key.id }}",
+              "type": "string"
+            },
+            {
+              "id": "c6b81fce-0087-4428-a388-a2d2963959e0",
+              "name": "objetoMensagem",
+              "value": "={{ $json.body.data }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "e96920ec-431f-4102-8228-579f1d3f416f",
+      "name": "Filtra campos",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        860,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "268565f2-7db2-4483-b43c-fac3a04f092a",
+              "leftValue": "={{ $('Webhook').item.json.body.data.key.fromMe }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "5155b75c-2aba-41cf-bf90-87601fcd3ecb",
+      "name": "Eu mandei mensagem para eu mesmo?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1100,
+        300
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "c46e5e50-8774-4389-bab1-e19590fbb38a",
+      "name": "Não faça nada",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        1280,
+        100
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "9dc73147-e9de-4581-b1b3-7df6e5233d98",
+              "leftValue": "={{ $json.name }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "7f0c9d1d-1fb9-4664-8c99-add750b67d16",
+      "name": "cadastro existe ?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1540,
+        320
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO users (id, name, tel_number) \nVALUES (UUID(), '{{ $('Filtra campos').item.json.nomeCliente }}', '{{ $('Filtra campos').item.json.telefoneCliente }}');",
+        "options": {}
+      },
+      "id": "f8406fc9-cd89-42c4-b4a2-cb7cf93a8374",
+      "name": "Cria cadastro",
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.4,
+      "position": [
+        1800,
+        400
+      ],
+      "credentials": {
+        "mySql": {
+          "id": "5FxHM9FIOSj1BYie",
+          "name": "MySQL account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "select",
+        "table": {
+          "__rl": true,
+          "value": "users",
+          "mode": "list",
+          "cachedResultName": "users"
+        },
+        "where": {
+          "values": [
+            {
+              "column": "tel_number",
+              "value": "={{ $('Filtra campos').item.json.telefoneCliente }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "288ae324-a097-44f2-9475-f0026187656f",
+      "name": "verifica cadastro",
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.4,
+      "position": [
+        1340,
+        320
+      ],
+      "alwaysOutputData": true,
+      "credentials": {
+        "mySql": {
+          "id": "5FxHM9FIOSj1BYie",
+          "name": "MySQL account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "push",
+        "list": "=temp{{ $('Filtra campos').item.json.telefoneCliente }}",
+        "messageData": "={{ $('Filtra campos').item.json.objetoMensagem }}",
+        "tail": true
+      },
+      "id": "cc477da1-1f47-4ba7-b161-aa6377db1d85",
+      "name": "Redis",
+      "type": "n8n-nodes-base.redis",
+      "typeVersion": 1,
+      "position": [
+        1800,
+        220
+      ],
+      "alwaysOutputData": false,
+      "credentials": {
+        "redis": {
+          "id": "9wQ4GOe4Kcr6rJMc",
+          "name": "Redis account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "amount": 20
+      },
+      "id": "26b8fc40-22a6-4304-9713-825caf26ea51",
+      "name": "Wait",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        2700,
+        400
+      ],
+      "webhookId": "ea23b222-b6fe-4366-b14a-e4327622146e"
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "key": "=temp{{ $('Filtra campos').item.json.telefoneCliente }}",
+        "options": {}
+      },
+      "id": "6fa708b7-1a0e-4a54-b249-1e2afa34c6b3",
+      "name": "Redis1",
+      "type": "n8n-nodes-base.redis",
+      "typeVersion": 1,
+      "position": [
+        2220,
+        220
+      ],
+      "credentials": {
+        "redis": {
+          "id": "9wQ4GOe4Kcr6rJMc",
+          "name": "Redis account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "delete",
+        "key": "=temp{{ $('Filtra campos').item.json.telefoneCliente }}"
+      },
+      "id": "d38cb8d8-52eb-42c8-bdac-540bbf6b2f04",
+      "name": "Redis2",
+      "type": "n8n-nodes-base.redis",
+      "typeVersion": 1,
+      "position": [
+        2700,
+        220
+      ],
+      "credentials": {
+        "redis": {
+          "id": "9wQ4GOe4Kcr6rJMc",
+          "name": "Redis account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "id": "09e54833-3857-437d-9799-3ab5bb4e3c2b",
+      "name": "No Operation, do nothing",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        2700,
+        40
+      ]
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ JSON.parse($json.propertyName.first()).key.id }}",
+                    "rightValue": "={{ $('Filtra campos').item.json.idMensagem }}",
+                    "operator": {
+                      "type": "string",
+                      "operation": "notEquals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "nada a fazer"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "f40994f0-64c9-48a2-81aa-8b4b2c922c10",
+                    "leftValue": "={{ JSON.parse($json.propertyName.last()).messageTimestamp.toDateTime('s').toISO() }}",
+                    "rightValue": "={{ $now.minus(30, 'seconds') }}",
+                    "operator": {
+                      "type": "dateTime",
+                      "operation": "before"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "prosseguir (já passou 20s)"
+            }
+          ]
+        },
+        "options": {
+          "fallbackOutput": "extra",
+          "renameFallbackOutput": "esperar"
+        }
+      },
+      "id": "c32deda1-1ff2-4ae7-8e83-7c81380647b6",
+      "name": "Chegou mensagem nova?",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        2440,
+        220
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "b2580a85-38a1-4736-b349-bd24998e257b",
+              "name": "=messages",
+              "value": "={{ $json.propertyName.map(value => JSON.parse(value).message.conversation).join(' ') }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "03d035c5-ada9-4c87-93e7-bd85b6007caa",
+      "name": "messages",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        2980,
+        220
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://192.168.205.43/v1/chat-messages",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer app-l0Y1Jl3zoJg6MMH5rMBdEu5S"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n    \"inputs\": {},\n    \"query\": \"{{ $json.messages }}\",\n    \"response_mode\": \"streaming\",\n    \"conversation_id\": \"\",\n    \"user\": \"{{ $('verifica cadastro').item.json.id }}\",\n    \"files\": [\n      {\n        \"type\": \"image\",\n        \"transfer_method\": \"remote_url\",\n        \"url\": \"https://cloud.dify.ai/logo/logo-site.png\"\n      }\n    ]\n}",
+        "options": {}
+      },
+      "id": "02ac43a1-a5d0-4f08-9bda-3d8fbf466f52",
+      "name": "HTTP Request",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        3200,
+        220
+      ]
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "000ec011-d5a4-46d6-b72a-868ae20b1237",
+        "options": {}
+      },
+      "id": "e0bb7177-e95f-4a93-8c12-bc3fdfe35270",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        620,
+        300
+      ],
+      "webhookId": "000ec011-d5a4-46d6-b72a-868ae20b1237"
+    }
+  ],
+  "pinData": {
+    "Webhook": [
+      {
+        "json": {
+          "headers": {
+            "content-type": "application/json",
+            "user-agent": "axios/1.7.7",
+            "content-length": "937",
+            "accept-encoding": "gzip, compress, deflate, br",
+            "host": "192.168.205.43:5678",
+            "connection": "keep-alive"
+          },
+          "params": {},
+          "query": {},
+          "body": {
+            "event": "messages.upsert",
+            "instance": "gigazap",
+            "data": {
+              "key": {
+                "remoteJid": "556692235295@s.whatsapp.net",
+                "fromMe": false,
+                "id": "3F989BEE063F34444545"
+              },
+              "pushName": "Winy Zanin",
+              "status": "DELIVERY_ACK",
+              "message": {
+                "messageContextInfo": {
+                  "deviceListMetadata": {
+                    "senderKeyHash": "Y3mWgcPDsozS3A==",
+                    "senderTimestamp": "1730683336",
+                    "recipientKeyHash": "uvpHXl+aKAhOzw==",
+                    "recipientTimestamp": "0"
+                  },
+                  "deviceListMetadataVersion": 2
+                },
+                "conversation": "teste"
+              },
+              "contextInfo": {
+                "expiration": 0,
+                "ephemeralSettingTimestamp": "0",
+                "disappearingMode": {
+                  "initiator": "CHANGED_IN_CHAT"
+                }
+              },
+              "messageType": "conversation",
+              "messageTimestamp": 1731945557,
+              "instanceId": "4e92055d-24c3-4f21-ad83-50f97b57a3ab",
+              "source": "unknown"
+            },
+            "destination": "http://192.168.205.43:5678/webhook-test/000ec011-d5a4-46d6-b72a-868ae20b1237",
+            "date_time": "2024-11-18T12:59:18.199Z",
+            "sender": "556696822722@s.whatsapp.net",
+            "server_url": "http://localhost:8080",
+            "apikey": "9AE3396C0BE8-43C2-9562-CBE42C66955B"
+          },
+          "webhookUrl": "http://localhost:5678/webhook-test/000ec011-d5a4-46d6-b72a-868ae20b1237",
+          "executionMode": "test"
+        }
+      }
+    ],
+    "messages": [
+      {
+        "json": {
+          "messages": "teste"
+        }
+      }
+    ]
+  },
+  "connections": {
+    "Filtra campos": {
+      "main": [
+        [
+          {
+            "node": "Eu mandei mensagem para eu mesmo?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Eu mandei mensagem para eu mesmo?": {
+      "main": [
+        [
+          {
+            "node": "Não faça nada",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "verifica cadastro",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "cadastro existe ?": {
+      "main": [
+        [
+          {
+            "node": "Redis",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Cria cadastro",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cria cadastro": {
+      "main": [
+        [
+          {
+            "node": "verifica cadastro",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "verifica cadastro": {
+      "main": [
+        [
+          {
+            "node": "cadastro existe ?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "Redis1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Redis1": {
+      "main": [
+        [
+          {
+            "node": "Chegou mensagem nova?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Redis": {
+      "main": [
+        [
+          {
+            "node": "Redis1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Chegou mensagem nova?": {
+      "main": [
+        [
+          {
+            "node": "No Operation, do nothing",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Redis2",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Redis2": {
+      "main": [
+        [
+          {
+            "node": "messages",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "messages": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Filtra campos",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "a3e63f78-9a2b-45ee-a833-0e4dde48a110",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "7aa9aaf1a5727857f8fe1a9f54c245646c3d370126214c00bd7b8bd74778d32a"
+  },
+  "id": "okuzH8y7tcIvK6d7",
+  "tags": []
+}
