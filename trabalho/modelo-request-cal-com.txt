@@ -31,7 +31,6 @@ get_end_of_next_week
 
 {"startTime": "2024-11-09T10:00:00.000Z", "nome": "Gabriel", "telefone": "66996613990", "email": "lucasnunesb6@gmail.com", "endTime": "2024-11-09T11:00:00.000Z"}}
 
-66996613990 telefone
-lucasnbatista51@gmail.com email
-
+66996613990 
+lucasnbatista51@gmail.com 
 {"make_meeting": {"startTime": "2024-11-30T11:00:00.000Z", "nome": "Lucas", "telefone": "66996613990", "email": "lucasnbatista51@gmail.com", "endTime": "2024-11-30T12:00:00.000Z"}}
