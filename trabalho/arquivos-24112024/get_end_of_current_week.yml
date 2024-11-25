@@ -1,0 +1,137 @@
+app:
+  description: get_end_of_current_week
+  icon: 🤖
+  icon_background: '#FFEAD5'
+  mode: workflow
+  name: get_end_of_current_week
+  use_icon_as_answer_icon: false
+kind: app
+version: 0.1.2
+workflow:
+  conversation_variables: []
+  environment_variables: []
+  features:
+    file_upload:
+      image:
+        enabled: false
+        number_limits: 3
+        transfer_methods:
+        - local_file
+        - remote_url
+    opening_statement: ''
+    retriever_resource:
+      enabled: true
+    sensitive_word_avoidance:
+      enabled: false
+    speech_to_text:
+      enabled: false
+    suggested_questions: []
+    suggested_questions_after_answer:
+      enabled: false
+    text_to_speech:
+      enabled: false
+      language: ''
+      voice: ''
+  graph:
+    edges:
+    - data:
+        isInIteration: false
+        sourceType: start
+        targetType: code
+      id: 1730599510119-source-1730599513563-target
+      source: '1730599510119'
+      sourceHandle: source
+      target: '1730599513563'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        sourceType: code
+        targetType: end
+      id: 1730599513563-source-1730599516329-target
+      source: '1730599513563'
+      sourceHandle: source
+      target: '1730599516329'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    nodes:
+    - data:
+        desc: ''
+        selected: false
+        title: Iniciar
+        type: start
+        variables: []
+      height: 53
+      id: '1730599510119'
+      position:
+        x: 80
+        y: 282
+      positionAbsolute:
+        x: 80
+        y: 282
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 243
+    - data:
+        code: "from datetime import datetime, timedelta, timezone\n\ndef get_end_of_current_week():\n\
+          \    cuiaba_tz = timezone(timedelta(hours=-4))\n    today = datetime.now(cuiaba_tz)\n\
+          \    # Calcula o início da semana (domingo)\n    start_of_week = today -\
+          \ timedelta(days=(today.weekday() + 1) % 7)\n    # Final da semana: sábado\
+          \ às 23:59:59\n    end_of_week = start_of_week + timedelta(days=6)\n   \
+          \ end_of_week = end_of_week.replace(hour=23, minute=59, second=59, microsecond=0)\n\
+          \    return end_of_week.strftime(\"%Y-%m-%d %H:%M:%S\")\n\ndef main():\n\
+          \    result = get_end_of_current_week()\n    return {\"result\": result}\n\
+          \n# Retorna o valor como esperado pelo Dify\nresult = main()\n"
+        code_language: python3
+        desc: ''
+        outputs:
+          result:
+            children: null
+            type: string
+        selected: false
+        title: Código
+        type: code
+        variables: []
+      height: 53
+      id: '1730599513563'
+      position:
+        x: 383
+        y: 282
+      positionAbsolute:
+        x: 383
+        y: 282
+      selected: true
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 243
+    - data:
+        desc: ''
+        outputs:
+        - value_selector:
+          - '1730599513563'
+          - result
+          variable: result
+        selected: false
+        title: Fim
+        type: end
+      height: 89
+      id: '1730599516329'
+      position:
+        x: 686
+        y: 282
+      positionAbsolute:
+        x: 686
+        y: 282
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 243
+    viewport:
+      x: -1155
+      y: -316
+      zoom: 2
