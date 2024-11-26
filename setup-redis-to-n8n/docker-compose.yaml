@@ -20,4 +20,5 @@ volumes:
 networks:
   shared-network:    # Define a rede compartilhada
     driver: bridge
+    external: true
 

@@ -21,3 +21,4 @@ networks:
     driver: bridge
   shared-network:    # Define a rede compartilhada
     driver: bridge
+    external: true

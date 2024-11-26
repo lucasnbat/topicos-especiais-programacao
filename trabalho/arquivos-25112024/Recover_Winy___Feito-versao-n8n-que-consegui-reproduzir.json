@@ -1,0 +1,881 @@
+{
+  "name": "Recover Winy - Feito",
+  "nodes": [
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "d7052873-8610-4d2b-a44c-8bb813be2031",
+              "name": "telefoneCliente",
+              "value": "={{ $json.body.data.key.remoteJid }}",
+              "type": "string"
+            },
+            {
+              "id": "4330e4d7-eb3b-4aca-a29d-492bbd4c74ff",
+              "name": "telefoneEmpresa",
+              "value": "={{ $json.body.sender }}",
+              "type": "string"
+            },
+            {
+              "id": "05575cee-5620-45ce-a3c4-d35f8f2da609",
+              "name": "nomeCliente",
+              "value": "={{ $json.body.data.pushName }}",
+              "type": "string"
+            },
+            {
+              "id": "88f4a4af-8ef6-4810-9a5c-ef467df3c1d2",
+              "name": "nomeInstancia",
+              "value": "={{ $json.body.instance }}",
+              "type": "string"
+            },
+            {
+              "id": "8348f3f0-730c-41ea-a77e-8935713151ef",
+              "name": "mensagem",
+              "value": "={{ $json.body.data.message.conversation }}",
+              "type": "string"
+            },
+            {
+              "id": "6253fb28-98fa-46a7-af81-b9c16bc351c3",
+              "name": "tipoMensagem",
+              "value": "={{ $json.body.data.messageType }}",
+              "type": "string"
+            },
+            {
+              "id": "a000d91d-c8dc-4f54-8ee5-737c24348d4d",
+              "name": "idMensagem",
+              "value": "={{ $json.body.data.key.id }}",
+              "type": "string"
+            },
+            {
+              "id": "c6b81fce-0087-4428-a388-a2d2963959e0",
+              "name": "objetoMensagem",
+              "value": "={{ $json.body.data }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "db735eed-f27a-4ee5-9a95-13d3ea904d40",
+      "name": "Filtra campos",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -1220,
+        720
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "268565f2-7db2-4483-b43c-fac3a04f092a",
+              "leftValue": "={{ $('Webhook').item.json.body.data.key.fromMe }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "b82d6a79-c505-475b-b761-e1f9e0bb13c4",
+      "name": "Eu mandei mensagem para eu mesmo?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -980,
+        720
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "c0caba5f-6592-48b4-8ac6-219bb049bc62",
+      "name": "Não faça nada",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        -800,
+        520
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "9dc73147-e9de-4581-b1b3-7df6e5233d98",
+              "leftValue": "={{ $json.name }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "9fbe75b5-d22d-4615-8442-ed3b57db5e14",
+      "name": "cadastro existe ?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -540,
+        740
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "select",
+        "table": {
+          "__rl": true,
+          "value": "users",
+          "mode": "list",
+          "cachedResultName": "users"
+        },
+        "where": {
+          "values": [
+            {
+              "column": "tel_number",
+              "value": "={{ $('Filtra campos').item.json.telefoneCliente }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "4c425cb8-2806-4515-b1ec-f1041baff6ed",
+      "name": "verifica cadastro",
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.4,
+      "position": [
+        -740,
+        740
+      ],
+      "alwaysOutputData": true,
+      "credentials": {
+        "mySql": {
+          "id": "uHrXPOLyoZRoflht",
+          "name": "Unnamed credential"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "push",
+        "list": "=temp{{ $('Filtra campos').item.json.telefoneCliente }}",
+        "messageData": "={{ $('Filtra campos').item.json.objetoMensagem }}",
+        "tail": true
+      },
+      "id": "b53378ea-17f5-4214-848d-6b602e8968c0",
+      "name": "Redis",
+      "type": "n8n-nodes-base.redis",
+      "typeVersion": 1,
+      "position": [
+        -280,
+        640
+      ],
+      "alwaysOutputData": false,
+      "credentials": {
+        "redis": {
+          "id": "IxJgb8cMClWRq9gH",
+          "name": "Redis account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "id": "46bdbd0d-4fbe-41a7-a461-0563b4f5c2ca",
+      "name": "Wait",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        460,
+        820
+      ],
+      "webhookId": "ea23b222-b6fe-4366-b14a-e4327622146e"
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "key": "=temp{{ $('Filtra campos').item.json.telefoneCliente }}",
+        "options": {}
+      },
+      "id": "2958ff08-69d9-4cb3-8bbc-49326532cbe0",
+      "name": "Redis1",
+      "type": "n8n-nodes-base.redis",
+      "typeVersion": 1,
+      "position": [
+        -60,
+        640
+      ],
+      "credentials": {
+        "redis": {
+          "id": "IxJgb8cMClWRq9gH",
+          "name": "Redis account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "delete",
+        "key": "=temp{{ $('Filtra campos').item.json.telefoneCliente }}"
+      },
+      "id": "40d18e6b-5661-40c1-9180-b4facd0684cc",
+      "name": "Redis2",
+      "type": "n8n-nodes-base.redis",
+      "typeVersion": 1,
+      "position": [
+        460,
+        640
+      ],
+      "credentials": {
+        "redis": {
+          "id": "IxJgb8cMClWRq9gH",
+          "name": "Redis account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "id": "32727cc1-b738-44c0-ad7c-7aaeba54aa9a",
+      "name": "No Operation, do nothing",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        460,
+        460
+      ]
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ JSON.parse($json.propertyName.first()).key.id }}",
+                    "rightValue": "={{ $('Filtra campos').item.json.idMensagem }}",
+                    "operator": {
+                      "type": "string",
+                      "operation": "notEquals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "nada a fazer"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "f40994f0-64c9-48a2-81aa-8b4b2c922c10",
+                    "leftValue": "={{ JSON.parse($json.propertyName.last()).messageTimestamp.toDateTime('s').toISO() }}",
+                    "rightValue": "={{ $now.minus(30, 'seconds') }}",
+                    "operator": {
+                      "type": "dateTime",
+                      "operation": "before"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "prosseguir (já passou 20s)"
+            }
+          ]
+        },
+        "options": {
+          "fallbackOutput": "extra",
+          "renameFallbackOutput": "esperar"
+        }
+      },
+      "id": "94ab7d50-7508-462c-b561-e71b8470ea31",
+      "name": "Chegou mensagem nova?",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        200,
+        640
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "b2580a85-38a1-4736-b349-bd24998e257b",
+              "name": "=messages",
+              "value": "={{ $json.propertyName.map(value => JSON.parse(value).message.conversation).join(' ') }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "651458d5-c00e-4431-a8bd-58d033fb099c",
+      "name": "messages",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        700,
+        640
+      ]
+    },
+    {
+      "parameters": {
+        "table": {
+          "__rl": true,
+          "value": "users",
+          "mode": "list",
+          "cachedResultName": "users"
+        },
+        "dataMode": "defineBelow",
+        "valuesToSend": {
+          "values": [
+            {
+              "column": "name",
+              "value": "={{ $('Filtra campos').item.json.nomeCliente }}"
+            },
+            {
+              "column": "tel_number",
+              "value": "={{ $('Filtra campos').item.json.telefoneCliente }}"
+            },
+            {
+              "column": "conversation_id"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "ad1a0316-cabb-4fc0-8478-1a8195fd733a",
+      "name": "criar cadastro",
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.4,
+      "position": [
+        -280,
+        840
+      ],
+      "credentials": {
+        "mySql": {
+          "id": "uHrXPOLyoZRoflht",
+          "name": "Unnamed credential"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "table": {
+          "__rl": true,
+          "value": "users",
+          "mode": "list",
+          "cachedResultName": "users"
+        },
+        "dataMode": "defineBelow",
+        "columnToMatchOn": "tel_number",
+        "valueToMatchOn": "={{ $('Filtra campos').item.json.telefoneCliente }}",
+        "valuesToSend": {
+          "values": [
+            {
+              "column": "conversation_id",
+              "value": "={{ $json.thoughtEvents[0].conversation_id }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "6ab10a18-3b91-4574-a2ea-2247ff47ed84",
+      "name": "MySQL",
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.4,
+      "position": [
+        1640,
+        500
+      ],
+      "credentials": {
+        "mySql": {
+          "id": "uHrXPOLyoZRoflht",
+          "name": "Unnamed credential"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Inicializa um array para combinar todas as respostas\nlet combinedAnswers = [];\n\n// Debug: Verifica os itens recebidos no nó\nconsole.log(\"Dados recebidos no nó:\", items);\n\n// Verifica se há dados no primeiro item recebido\nconst rawData = items[0]?.json?.data;\nif (rawData) {\n  // Divide os dados por linha para processar cada evento individualmente\n  const lines = rawData.split(\"\\n\").filter(line => line.startsWith(\"data: \"));\n\n  // Processa cada linha para extrair os eventos válidos\n  const thoughtEvents = lines\n    .map(line => {\n      try {\n        // Remove o prefixo 'data: ' e faz o parse do JSON\n        return JSON.parse(line.replace(\"data: \", \"\"));\n      } catch (error) {\n        console.error(\"Erro ao parsear a linha:\", line, error);\n        return null; // Retorna null se o parse falhar\n      }\n    })\n    .filter(event => event && event.answer && event.answer.trim() !== \"\"); // Filtra eventos válidos com 'answer'\n\n  // Adiciona as respostas válidas ao array combinado\n  thoughtEvents.forEach(event => {\n    console.log(\"Evento processado:\", event); // Debug do evento completo\n    combinedAnswers.push(event.answer.trim());\n  });\n} else {\n  console.log(\"'data' não encontrado ou inválido.\");\n}\n\n// Debug: Mostra as respostas combinadas antes da concatenação\nconsole.log(\"Respostas combinadas:\", combinedAnswers);\n\n// Concatena todas as respostas em uma única string\nconst concatenatedPhrase = combinedAnswers.join(\" \").trim();\n\n// Debug: Mostra a frase concatenada final\nconsole.log(\"Frase concatenada:\", concatenatedPhrase);\n\n// Retorna o resultado ou uma mensagem padrão se vazio\nreturn [\n  {\n    json: {\n      phrase: concatenatedPhrase || \"Nenhum dado disponível em 'answer'.\"\n    }\n  }\n];\n"
+      },
+      "id": "fffacc59-28fd-4fd4-a92c-f26561b2136d",
+      "name": "Code",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1160,
+        640
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.dify.ai/v1/chat-messages",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer app-eld1tyHRW2X5xmjL0ttIzRuW"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n    \"inputs\": {},\n    \"query\": \"{{ $json.messages }}\",\n    \"response_mode\": \"streaming\",\n    \"conversation_id\": \"{{ $('verifica cadastro').item.json.conversation_id }}\",\n    \"user\": \"{{ $('verifica cadastro').item.json.tel_number }}\",\n    \"files\": []\n}",
+        "options": {}
+      },
+      "id": "c437d621-12f0-49fa-9aa5-52c36472f382",
+      "name": "dify",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        940,
+        640
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "f9c9426d-68a2-4b46-9f36-8bded1175738",
+              "leftValue": "={{ $('verifica cadastro').item.json.conversation_id }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "empty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "78ddab2f-39c8-4cde-9873-dfe1ad069ab9",
+      "name": "conversation ID está vazio ?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1380,
+        640
+      ]
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "000ec011-d5a4-46d6-b72a-868ae20b1237",
+        "options": {}
+      },
+      "id": "0e06350d-2c55-4a06-85a9-b2c908ae29da",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -1460,
+        720
+      ],
+      "webhookId": "000ec011-d5a4-46d6-b72a-868ae20b1237"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=http://172.29.0.3:8090/message/sendText/{{ $('Filtra campos').item.json.nomeInstancia }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apiKey",
+              "value": "B972C3FCBCD0-4ACF-8D00-37247BADD006"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "number",
+              "value": "={{ $('Filtra campos').item.json.telefoneCliente }}"
+            },
+            {
+              "name": "text",
+              "value": "={{ $json.resposta }}"
+            }
+          ]
+        },
+        "options": {
+          "redirect": {}
+        }
+      },
+      "id": "e424edee-cac3-49fa-8592-dae7c2c8d278",
+      "name": "HTTP Request1",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2220,
+        660
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "64817974-0e1f-42a1-895a-8ea5f8fd4094",
+              "name": "resposta",
+              "value": "={{ $('Code').item.json.phrase }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "2453345d-9b1f-4c3f-a4b9-12ed962c7a58",
+      "name": "Edit Fields",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1860,
+        660
+      ],
+      "alwaysOutputData": true
+    }
+  ],
+  "pinData": {
+    "Webhook": [
+      {
+        "json": {
+          "headers": {
+            "content-type": "application/json",
+            "user-agent": "axios/1.7.7",
+            "content-length": "874",
+            "accept-encoding": "gzip, compress, deflate, br",
+            "host": "172.29.0.5:5678",
+            "connection": "keep-alive"
+          },
+          "params": {},
+          "query": {},
+          "body": {
+            "event": "messages.upsert",
+            "instance": "gigabot",
+            "data": {
+              "key": {
+                "remoteJid": "5566933008152@s.whatsapp.net",
+                "fromMe": false,
+                "id": "7958E23EF56766D5EDB4075E13FFD686"
+              },
+              "pushName": "Esther Tavares",
+              "status": "DELIVERY_ACK",
+              "message": {
+                "conversation": "Oiiiee",
+                "messageContextInfo": {
+                  "deviceListMetadata": {
+                    "senderTimestamp": "1731662042",
+                    "recipientKeyHash": "JHoeLt9q1whlHA==",
+                    "recipientTimestamp": "1731801016"
+                  },
+                  "deviceListMetadataVersion": 2,
+                  "messageSecret": "5b713kxSCTf1AdT5QhfuO/vuYGaBZPJGhqN1Dl1FrBk="
+                }
+              },
+              "messageType": "conversation",
+              "messageTimestamp": 1732588719,
+              "instanceId": "cf11f339-95c3-40a2-b2d9-b2393f6991bf",
+              "source": "android"
+            },
+            "destination": "http://172.29.0.5:5678/webhook-test/000ec011-d5a4-46d6-b72a-868ae20b1237",
+            "date_time": "2024-11-25T23:38:40.399Z",
+            "sender": "556696613990@s.whatsapp.net",
+            "server_url": "http://localhost:8090",
+            "apikey": "B972C3FCBCD0-4ACF-8D00-37247BADD006"
+          },
+          "webhookUrl": "http://localhost:5678/webhook-test/000ec011-d5a4-46d6-b72a-868ae20b1237",
+          "executionMode": "test"
+        }
+      }
+    ]
+  },
+  "connections": {
+    "Filtra campos": {
+      "main": [
+        [
+          {
+            "node": "Eu mandei mensagem para eu mesmo?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Eu mandei mensagem para eu mesmo?": {
+      "main": [
+        [
+          {
+            "node": "Não faça nada",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "verifica cadastro",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "cadastro existe ?": {
+      "main": [
+        [
+          {
+            "node": "Redis",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "criar cadastro",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "verifica cadastro": {
+      "main": [
+        [
+          {
+            "node": "cadastro existe ?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "Redis1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Redis1": {
+      "main": [
+        [
+          {
+            "node": "Chegou mensagem nova?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Redis": {
+      "main": [
+        [
+          {
+            "node": "Redis1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Chegou mensagem nova?": {
+      "main": [
+        [
+          {
+            "node": "No Operation, do nothing",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Redis2",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Redis2": {
+      "main": [
+        [
+          {
+            "node": "messages",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "criar cadastro": {
+      "main": [
+        [
+          {
+            "node": "verifica cadastro",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "dify": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "conversation ID está vazio ?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "messages": {
+      "main": [
+        [
+          {
+            "node": "dify",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "conversation ID está vazio ?": {
+      "main": [
+        [
+          {
+            "node": "MySQL",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "MySQL": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Filtra campos",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "b0c01001-f647-4a46-a5a8-f3c3033ac535",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "820741496786d8ba7d5abf196562ef82fcc14b243df91d47772a4b8c04182b38"
+  },
+  "id": "9jf49qiWSdEU1hME",
+  "tags": []
+}
