@@ -1,0 +1,133 @@
+app:
+  description: get_current_time
+  icon: 🤖
+  icon_background: '#FFEAD5'
+  mode: workflow
+  name: get_current_time
+  use_icon_as_answer_icon: false
+kind: app
+version: 0.1.2
+workflow:
+  conversation_variables: []
+  environment_variables: []
+  features:
+    file_upload:
+      image:
+        enabled: false
+        number_limits: 3
+        transfer_methods:
+        - local_file
+        - remote_url
+    opening_statement: ''
+    retriever_resource:
+      enabled: true
+    sensitive_word_avoidance:
+      enabled: false
+    speech_to_text:
+      enabled: false
+    suggested_questions: []
+    suggested_questions_after_answer:
+      enabled: false
+    text_to_speech:
+      enabled: false
+      language: ''
+      voice: ''
+  graph:
+    edges:
+    - data:
+        isInIteration: false
+        sourceType: start
+        targetType: code
+      id: 1732148740166-source-1732148808722-target
+      source: '1732148740166'
+      sourceHandle: source
+      target: '1732148808722'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        sourceType: code
+        targetType: end
+      id: 1732148808722-source-1732148824834-target
+      source: '1732148808722'
+      sourceHandle: source
+      target: '1732148824834'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    nodes:
+    - data:
+        desc: ''
+        selected: false
+        title: Iniciar
+        type: start
+        variables: []
+      height: 53
+      id: '1732148740166'
+      position:
+        x: 80
+        y: 282
+      positionAbsolute:
+        x: 80
+        y: 282
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 243
+    - data:
+        code: "from datetime import datetime, timedelta, timezone\n\ndef get_current_datetime():\n\
+          \    cuiaba_tz = timezone(timedelta(hours=-4))\n    current_datetime = datetime.now(cuiaba_tz)\n\
+          \    return current_datetime.strftime(\"%Y-%m-%d %H:%M:%S\")\n\ndef main():\n\
+          \    result = get_current_datetime()\n    return {\"result\": result}\n\n\
+          # Retorna o valor como esperado pelo Dify\nresult = main()\n"
+        code_language: python3
+        desc: ''
+        outputs:
+          result:
+            children: null
+            type: string
+        selected: false
+        title: Código
+        type: code
+        variables: []
+      height: 53
+      id: '1732148808722'
+      position:
+        x: 383
+        y: 282
+      positionAbsolute:
+        x: 383
+        y: 282
+      selected: true
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 243
+    - data:
+        desc: ''
+        outputs:
+        - value_selector:
+          - '1732148808722'
+          - result
+          variable: result
+        selected: false
+        title: Fim
+        type: end
+      height: 89
+      id: '1732148824834'
+      position:
+        x: 686
+        y: 282
+      positionAbsolute:
+        x: 686
+        y: 282
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 243
+    viewport:
+      x: -347.5
+      y: 10.5
+      zoom: 1
